@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3180
+const port = 3000
 const {MongoClient,ObjectId} = require("mongodb");
 const bodyParser = require('body-parser');
 
@@ -26,7 +26,7 @@ app.post('/addCategory', (req, res) => {//Input: category Id, child category lis
           if(result == null){
             db.collection('category').insertOne({name: child, childCategories: []}).then((result)=>{
               childId = result.ops[0]._id.toString();
-              console.log("InsertedCat", childId);
+              //console.log("InsertedCat", childId);
               db.collection('category').updateOne({name: req.body.name}, { $addToSet: {childCategories: ObjectId(childId)}}, {upsert: true}).then((result)=>{
                 res.status(200).send(result);
               }).catch(err=>{
@@ -37,7 +37,7 @@ app.post('/addCategory', (req, res) => {//Input: category Id, child category lis
           }
           else{
             childId = result._id;
-            console.log("else", childId)
+            //console.log("else", childId)
             db.collection('category').updateOne({name: req.body.name}, { $addToSet: {childCategories: ObjectId(childId)}}, {upsert: true}).then((result)=>{
               res.status(200).send(result);
             }).catch(err=>{
@@ -68,6 +68,7 @@ app.get('/getCategory', (req, res) => {
 
 
 app.post('/addOrUpdateProduct', (req, res) => {
+  // Input: {"productName": Value, "categories": [values], "prodPrice": [{"price": Value, "currency": Value}],"stockQuantity": ["size": Value, "quantity": Value},{	"size": Value,"quantity": Value}],"brand":Value,"images": [file1, File2, ...]}
   console.log(req.body);
     MongoClient.connect('mongodb://127.0.0.1:27017/', (error, client) => {
       if(error){
@@ -96,13 +97,10 @@ app.post('/addOrUpdateProduct', (req, res) => {
         }
   
         else{
-          console.log('else', prodId);
-          db.collection('Products').updateOne({name: req.body.productName, brand: req.body.brand, status: '1'}, {$addToSet: {categories: catArray, productPrice: req.body.prodCategory, stockQuantity: req.body.stockQuantity, images: req.body.images}}, {name: req.body.productName, brand: req.body.brand, status: '1', lastUpdate: myDateString}, {upsert: true}).then((result) => {
+          //Assumption: all the lists present in each product document is updated totally. Hence, front end displays the existing elements in the respective list and allows user to append new or edit the existing ones.
+          db.collection('Products').updateOne({name: req.body.productName, brand: req.body.brand, status: 1}, {$set: {name: req.body.productName, brand: req.body.brand, status: 1, lastUpdate: myDateString, categories: catArray, productPrice: req.body.prodCategory, stockQuantity: req.body.stockQuantity, images: req.body.images}}, {upsert: true}).then((result) => {
               console.log('Id',result._id);
-              // db.collection('Products').updateOne({name: req.body.productName, brand: req.body.brand, status: 1}, ).then((result) => {
-              //   console.log(result);
-              //   
-              // })
+              
               res.status(200).send(result);
           });
         }
@@ -114,7 +112,8 @@ app.post('/addOrUpdateProduct', (req, res) => {
 });
 
 
-app.post('/getCategoryWiseProduct', (req, res) => {
+app.post('/getCategoryWiseProduct', (req, res) => { //Assumption: The user selects category from the list of available categories, displayed by the System.
+  //Input: [categories]
   console.log(req.body.categories);
   MongoClient.connect('mongodb://127.0.0.1:27017/', (error, client) => {
     if(error){
