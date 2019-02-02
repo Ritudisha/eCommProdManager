@@ -1,0 +1,5 @@
+{"_id":{"$oid":"5c4f3b7570d10f48259f83c3"},"name":"Fashion","childCategories":[{"$oid":"5c4f3ba670d10f48259f83c4"},{"$oid":"5c4f41301184481d4d243613"}]}
+{"_id":{"$oid":"5c4f3ba670d10f48259f83c4"},"name":"Women","childCategories":[{"$oid":"5c5076d31650390dfbaec6b7"}],"depLevel":1.0}
+{"_id":{"$oid":"5c4f41301184481d4d243613"},"name":"Men","childCategories":[{"$oid":"5c52d7ec21c3f6b02c0bb081"}]}
+{"_id":{"$oid":"5c5076d31650390dfbaec6b7"},"name":"Girls","childCategories":[]}
+{"_id":{"$oid":"5c52d7ec21c3f6b02c0bb081"},"name":"Boys","childCategories":[]}
