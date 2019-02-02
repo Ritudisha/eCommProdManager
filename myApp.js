@@ -97,13 +97,13 @@ app.post('/addOrUpdateProduct', (req, res) => {
   
         else{
           console.log('else', prodId);
-          db.collection('Products').updateOne({name: req.body.productName, brand: req.body.brand, status: '1'}, {name: req.body.productName, brand: req.body.brand, status: '1', lastUpdate: myDateString}, {upsert: true}).then((result) => {
+          db.collection('Products').updateOne({name: req.body.productName, brand: req.body.brand, status: '1'}, {$addToSet: {categories: catArray, productPrice: req.body.prodCategory, stockQuantity: req.body.stockQuantity, images: req.body.images}}, {name: req.body.productName, brand: req.body.brand, status: '1', lastUpdate: myDateString}, {upsert: true}).then((result) => {
               console.log('Id',result._id);
-              db.collection('Products').updateOne({name: req.body.productName, brand: req.body.brand, status: 1}, {$addToSet: {categories: catArray, productPrice: req.body.prodCategory, stockQuantity: req.body.stockQuantity, images: req.body.images}}).then((result) => {
-                console.log(result);
-                res.status(200).send(result);
-              })
-              
+              // db.collection('Products').updateOne({name: req.body.productName, brand: req.body.brand, status: 1}, ).then((result) => {
+              //   console.log(result);
+              //   
+              // })
+              res.status(200).send(result);
           });
         }
         
